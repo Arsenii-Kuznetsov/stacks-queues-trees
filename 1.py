@@ -1,29 +1,39 @@
 import os
+from re import findall
 
 file_name = input('Введите путь к файлу: ')
 if not os.path.isfile(file_name):
     exit('Файл не существует')
 if os.path.splitext(file_name)[-1] != '.txt':
     exit('Файл должен иметь формат txt')
-print('Очереди')
 with open(file_name, encoding='utf-8') as numbers_file:
-    numbers = numbers_file.readlines()
+    numbers = []
+    while True:
+        line = numbers_file.readline()
+        if not line:
+            break
+        line = line.strip()
+        if line:
+            numbers += [x for x in findall('[А-Я][1-9][0-9]*', line)]
+numbers.sort(key=lambda x: (x[0],int(x[1:])))
 queues = []
-for line in numbers:
-    line = line.strip()
-    if not line:
+added = []
+for number in numbers:
+    if number[0] in added:
         continue
-    number = [x.strip() for x in line.split(',') if x.strip()]
-    print(', '.join([x for x in number]))
-    queues += [number]
+    numbers_list = [x for x in numbers if x[0] == number[0]]
+    print(', '.join([x for x in numbers_list]))
+    queues += [numbers_list]
+    added += [number[0]]
 if not queues:
-    exit('Введён пустой файл')
+    exit('В файле не найдено подходящих номеров')
 numbers = []
-for i in range(max([len(x) for x in queues])):
+max_len = max(max([len(x) for x in queues]), len(queues))
+for i in range(max_len):
     for j in range(len(queues)):
         try:
             numbers += [queues[j][i]]
         except IndexError:
             continue
-print('Ответ:')
+print('Ответ')
 print(', '.join([x for x in numbers]))
