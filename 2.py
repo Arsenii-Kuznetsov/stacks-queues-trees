@@ -9,16 +9,13 @@ def solve(initial, N):
     start = tuple(tuple(stack) for stack in initial)
     if is_goal(start, N):
         return []
-
     queue = [start]
     visited = {start: None}
     head = 0
-
     while head < len(queue):
         state = queue[head]
         head += 1
         state_list = [list(stack) for stack in state]
-
         for i in range(N):
             if not state_list[i]:
                 continue
@@ -29,7 +26,6 @@ def solve(initial, N):
                 item = new_state[i].pop()
                 new_state[j].append(item)
                 new_state_tuple = tuple(tuple(stack) for stack in new_state)
-
                 if new_state_tuple not in visited:
                     visited[new_state_tuple] = (state, (i + 1, j + 1))
                     if is_goal(new_state_tuple, N):
